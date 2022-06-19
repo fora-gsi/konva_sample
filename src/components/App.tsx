@@ -1,7 +1,19 @@
 import React from "react";
 import Canvas from "./Canvas";
 import RegionsList from "./RegionsList";
-import { useStore } from "../store";
+
+type Regions = {
+  color: string;
+  id: string;
+  points: number[];
+};
+
+export const UserCount = React.createContext(
+  {} as {
+    regions: Regions[];
+    setRegions: React.Dispatch<React.SetStateAction<Regions>>;
+  }
+);
 
 function App() {
   return (
