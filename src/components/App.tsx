@@ -1,6 +1,7 @@
 import React from "react";
 import Canvas from "./Canvas";
 import RegionsList from "./RegionsList";
+import { useStore } from "../store";
 
 function App() {
   return (
