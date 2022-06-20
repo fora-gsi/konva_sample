@@ -4,12 +4,12 @@ import ComponentRight from "./ComponentRight";
 import "./App.css";
 
 export type Sprite = {
-  id: number;
+  id: string;
   x: number;
   y: number;
   width: number;
   height: number;
-  displayName?: string;
+  displayName: string;
   color?: string;
 };
 

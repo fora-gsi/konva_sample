@@ -8,7 +8,7 @@ const ComponentRight = () => {
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     const newSprite: Sprite = {
-      id: latestId + 1,
+      id: (latestId + 1).toString(),
       x: Math.random() * (500 - 160),
       y: Math.random() * (500 - 90),
       width: 160,
