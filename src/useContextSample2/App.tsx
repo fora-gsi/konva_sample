@@ -4,6 +4,7 @@ import ComponentRight from "./ComponentRight";
 import "./App.css";
 
 export type Sprite = {
+  id: number;
   x: number;
   y: number;
   width: number;
@@ -21,13 +22,13 @@ type UserStoreType = {
 export const UserStore = React.createContext({} as UserStoreType);
 
 function App() {
-  const [id, setId] = useState<number>(1);
+  const [latestId, setLatestId] = useState<number>(1);
   const [sprites, setSprites] = useState<Sprite[]>([]);
-  // const [store, setStore] = useState<UserStore>();
+
   return (
     <div className="panel-container" style={{ textAlign: "center" }}>
       <UserStore.Provider
-        value={{ latestId: id, setLatestId: setId, sprites, setSprites }}
+        value={{ latestId, setLatestId, sprites, setSprites }}
       >
         <div className="left-panel">
           <ComponentLeft />

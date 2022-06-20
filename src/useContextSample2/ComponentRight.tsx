@@ -4,23 +4,19 @@ import { Sprite, UserStore } from "./App";
 import Canvas from "./Canvas";
 
 const ComponentRight = () => {
-  const {
-    latestId: id,
-    setLatestId: setId,
-    sprites,
-    setSprites,
-  } = useContext(UserStore);
+  const { latestId, setLatestId, sprites, setSprites } = useContext(UserStore);
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     const newSprite: Sprite = {
+      id: latestId + 1,
       x: Math.random() * (500 - 160),
       y: Math.random() * (500 - 90),
       width: 160,
       height: 90,
       color: Konva.Util.getRandomColor(),
-      displayName: `Sprite #${id}`,
+      displayName: `Sprite #${latestId}`,
     };
-    setId(id + 1);
+    setLatestId(latestId + 1);
     setSprites(sprites.concat(newSprite));
   };
 

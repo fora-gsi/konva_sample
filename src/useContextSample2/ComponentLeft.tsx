@@ -8,7 +8,7 @@ const ComponentLeft = () => {
     <div>
       <p>Component Left</p>
       {sprites.map((sprite: Sprite) => (
-        <p>{sprite.displayName}</p>
+        <p key={sprite.id}>{sprite.displayName}</p>
       ))}
     </div>
   );
