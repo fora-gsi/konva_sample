@@ -4,9 +4,10 @@ import { UserStore } from "./App";
 
 const Canvas = () => {
   const { sprites } = useContext(UserStore);
+
   return (
     <Stage width={500} height={500}>
-      <Layer opacity={0.5} style={{ border: "1px solid black" }}>
+      <Layer opacity={0.9} style={{ border: "1px solid black" }}>
         {sprites.map(({ id, x, y, width, height, color, displayName }) => (
           <Group draggable={true} key={id.toString()}>
             <Rect

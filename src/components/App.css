@@ -1,0 +1,7 @@
+.panel-container {
+  display: flex;
+}
+.left-panel,
+.right-panel {
+  flex: 1 1 auto;
+}
