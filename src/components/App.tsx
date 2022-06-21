@@ -21,19 +21,6 @@ type UserStoreType = {
 };
 export const UserStore = React.createContext({} as UserStoreType);
 
-type Regions = {
-  color: string;
-  id: string;
-  points: number[];
-};
-
-export const UserCount = React.createContext(
-  {} as {
-    regions: Regions[];
-    setRegions: React.Dispatch<React.SetStateAction<Regions>>;
-  }
-);
-
 function App() {
   const [latestId, setLatestId] = useState<number>(1);
   const [sprites, setSprites] = useState<Sprite[]>([]);
@@ -59,7 +46,6 @@ function App() {
               />
             </label>
             <RegionsList />
-            {/* <RegionsList /> */}
           </div>
           <div className="right-panel">
             <Canvas />
