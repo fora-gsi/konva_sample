@@ -3,7 +3,7 @@ import Konva from "konva";
 import { Group, Layer, Rect, Stage, Text } from "react-konva";
 import { Sprite, UserStore } from "./App";
 
-const ComponentRight = () => {
+const Canvas = () => {
   const { latestId, setLatestId, sprites, setSprites } = useContext(UserStore);
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -55,4 +55,4 @@ const ComponentRight = () => {
   );
 };
 
-export default ComponentRight;
+export default Canvas;
