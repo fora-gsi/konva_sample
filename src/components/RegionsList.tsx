@@ -1,65 +1,51 @@
-import { ReactElement, useCallback, useState } from "react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable } from "@dnd-kit/sortable";
+import React, { useContext } from "react";
+import { Sprite, UserStore } from "./App";
 import { CSS } from "@dnd-kit/utilities";
-import { DraggableCard } from "./DraggableCard";
-import { DndContext } from "@dnd-kit/core";
 
-const items = ["1", "2", "3", "4", "5", "6", "7", "8"];
-const contents = items.map((item) => ({
-  id: item,
-  content: <DraggableCard>{item.toString()}</DraggableCard>,
-}));
-
-function SortableItem({
-  id,
-  children,
-}: {
-  id: string;
-  children: ReactElement;
-}) {
+const SortableItem = (props: { key: string; id: string; children: string }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id: props.id });
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
+      <p>{props.children}</p>
     </div>
   );
-}
+};
+
 const RegionsList = () => {
-  const [state, setState] =
-    useState<{ id: string; content: ReactElement }[]>(contents);
-  const handleDragEnd = useCallback(
-    (event: any) => {
-      const { active, over } = event;
-      if (over === null) return;
-      if (active.id !== over.id) {
-        const oldIndex = state
-          .map((item) => {
-            return item.id;
-          })
-          .indexOf(active.id);
-        const newIndex = state
-          .map((item) => {
-            return item.id;
-          })
-          .indexOf(over.id);
-        const newState = arrayMove(state, oldIndex, newIndex);
-        setState(newState);
-      }
-    },
-    [state]
-  );
+  const { sprites, setSprites } = useContext(UserStore);
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over !== null && active.id !== over.id) {
+      setSprites((sprites) => {
+        const oldIndex = sprites
+          .map((sprite) => sprite.id)
+          .indexOf(active.id.toString());
+        const newIndex = sprites
+          .map((sprite) => sprite.id)
+          .indexOf(over.id.toString());
+        return arrayMove(sprites, oldIndex, newIndex);
+      });
+    }
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <SortableContext items={state}>
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {state.map((item) => (
-            <SortableItem key={item.id} id={item.id}>
-              {item.content}
+      <SortableContext items={sprites}>
+        <div>
+          <p>Component Left</p>
+          {sprites.map((sprite: Sprite) => (
+            <SortableItem key={sprite.id} id={sprite.id}>
+              {sprite.displayName}
             </SortableItem>
           ))}
         </div>

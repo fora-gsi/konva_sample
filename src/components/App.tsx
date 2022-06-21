@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ComponentLeft from "./ComponentLeft";
 import Canvas from "./Canvas";
 import RegionsList from "./RegionsList";
 import "./App.css";
@@ -59,7 +58,7 @@ function App() {
                 defaultValue="0"
               />
             </label>
-            <ComponentLeft />
+            <RegionsList />
             {/* <RegionsList /> */}
           </div>
           <div className="right-panel">
