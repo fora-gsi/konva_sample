@@ -95,25 +95,20 @@ const Canvas = () => {
   };
 
   const checkDeselect = (e: any) => {
-    // deselect when clicked on empty area
-    const clickedOnEmpty = e.target === e.target.getStage();
-    if (clickedOnEmpty) {
-      selectShape("");
-    }
+    selectShape("");
   };
 
   const [image] = useImage("https://source.unsplash.com/6gWUg6bIyow");
 
   return (
     <React.Fragment>
-      <Stage
-        width={800}
-        height={600}
-        onMouseDown={checkDeselect}
-        onTouchStart={checkDeselect}
-      >
+      <Stage width={800} height={600}>
         <Layer opacity={0.9} style={{ border: "1px solid black" }}>
-          <Image image={image} />
+          <Image
+            image={image}
+            onMouseDown={checkDeselect}
+            onTouchStart={checkDeselect}
+          />
           {sprites.map((sprite, i) => (
             <Rectangle
               shapeProps={sprite}
