@@ -10,7 +10,7 @@ export type Sprite = {
   width: number;
   height: number;
   displayName: string;
-  color?: string;
+  fill?: string;
 };
 
 type UserStoreType = {
