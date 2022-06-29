@@ -29,13 +29,10 @@ const calcAngle = (a: Vector2d, b: Vector2d, c: Vector2d): number => {
 
   // ベクトルの内積をとる
   const dot = Vector2d.dot(va, vb);
-  // ベクトルの長さ(極座標系で言う|a|や|b|)を計算
-  const len_va = va.magnitude;
-  const len_vb = vb.magnitude;
 
   // dot = |a|*|b|cosθという公式を変形し
   // cosθ = dot/|a|*|b|としてcosθを導く
-  const cosTheta = dot / (len_va * len_vb);
+  const cosTheta = dot / (va.magnitude * vb.magnitude);
 
   // cosθから角度θを求める
   const theta = Math.acos(cosTheta);
@@ -58,9 +55,7 @@ export default function App() {
   const rad2deg = (rad: number) => rad * (180 / Math.PI);
 
   const handleAngleUpdate = useCallback(() => {
-    const tmpAngle = rad2deg(
-      calcAngle(coords[3].clone(), coords[2].clone(), coords[1].clone())
-    );
+    const tmpAngle = rad2deg(calcAngle(coords[3], coords[2], coords[1]));
     setAngle(tmpAngle);
   }, [coords]);
 
