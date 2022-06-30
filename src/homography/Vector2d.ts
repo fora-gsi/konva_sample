@@ -75,12 +75,14 @@ export default class Vector2d {
     return v1.clone().times(num);
   }
 
-  /** ベクトルの内積 */
+  /** 2つのベクトルの内積を求める */
   static dot(v1: Vector2d, v2: Vector2d) {
     return v1.x * v2.x + v1.y * v2.y;
   }
 
-  /** ベクトルの外積 */
+  /** 2つのベクトルの外積を返す
+   * @returns 外積のZ座標
+   */
   static cross(v1: Vector2d, v2: Vector2d) {
     return v1.x * v2.y - v1.y * v2.x;
   }
