@@ -9,72 +9,48 @@ const rectWidth = 320;
 const rectHeight = 180;
 const initialPoints: Vector2d[] = [
   new Vector2d(startX, startY),
-  new Vector2d(startX + rectWidth, startY),
-  new Vector2d(startX + rectWidth, startY + rectHeight),
   new Vector2d(startX, startY + rectHeight),
+  new Vector2d(startX + rectWidth, startY + rectHeight),
+  new Vector2d(startX + rectWidth, startY),
 ];
-
-/**
- * 座標A,B,Cを入力し、∠ABCのなす角度をラジアンで返す。
- * 座標ABCは反時計回りで入力すること。
- *
- * @param a 座標A
- * @param b 座標B
- * @param c 座標C
- * @returns ∠ABCの成す角度
- */
-const calcAngle = (a: Vector2d, b: Vector2d, c: Vector2d): number => {
-  const va: Vector2d = Vector2d.sub(a, b);
-  const vb: Vector2d = Vector2d.sub(c, b);
-
-  // ベクトルの内積をとる
-  const dot = Vector2d.dot(va, vb);
-
-  // dot = |a|*|b|cosθという公式を変形し
-  // cosθ = dot/|a|*|b|としてcosθを導く
-  const cosTheta = dot / (va.magnitude * vb.magnitude);
-
-  // cosθから角度θを求める
-  const theta = Math.acos(cosTheta);
-
-  // ベクトルの外積をとる
-  const cross = Vector2d.cross(va, vb);
-
-  // 外積のz成分が0未満なら角は入隅である
-  if (cross < 0) {
-    return 2 * Math.PI - theta;
-  } else {
-    return theta;
-  }
-};
 
 export default function App() {
   const [coords, setCoords] = useState<Vector2d[]>(initialPoints);
-  const [angle, setAngle] = useState(0);
-  const [vap, setVap] = useState<Vector2d>(
-    Vector2d.sub(initialPoints[1], initialPoints[0])
-  );
-  const [vab, setVab] = useState<Vector2d>(
-    Vector2d.sub(initialPoints[2], initialPoints[0])
-  );
-  const [dpx, setdpx] = useState<number>(Vector2d.cross(vap, vab));
+  const [dpx, setdpx] = useState<number[]>([0, 0, 0]);
 
-  const rad2deg = (rad: number) => rad * (180 / Math.PI);
-
-  const handleAngleUpdate = useCallback(() => {
-    const tmpAngle = rad2deg(calcAngle(coords[3], coords[2], coords[1]));
-    setAngle(tmpAngle);
+  useEffect(() => {
+    // const dpx = coords.map((v, i, coords) => {
+    //   const sv = coords[i - 1 >= 0 ? i - 1 : coords.length - 1]; // 線分の始点
+    //   const v1 = Vector2d.sub(coords.slice(i, i + 1)[0], sv); //線分の始点から円の中心
+    //   const v2 = Vector2d.sub(coords.slice(i + 1, i + 2)[0], sv); //線分の始点から終点
+    //   return Vector2d.cross(v2.normalized, v1);
+    //   // return 0;
+    // });
+    // const v2_1 = Vector2d.sub(coords[1], coords[0]); //線分の始点から円の中心
+    // const v2_2 = Vector2d.sub(coords[2], coords[0]); //線分の始点から終点
+    // const dpx2 = Vector2d.cross(v2_2.normalized, v2_1);
+    // const v3_1 = Vector2d.sub(coords[2], coords[1]); //線分の始点から円の中心
+    // const v3_2 = Vector2d.sub(coords[3], coords[1]); //線分の始点から終点
+    // const dpx3 = Vector2d.cross(v3_2.normalized, v3_1);
+    // const v4_1 = Vector2d.sub(coords[3], coords[2]); //線分の始点から円の中心
+    // const v4_2 = Vector2d.sub(coords[0], coords[2]); //線分の始点から終点
+    // const dpx4 = Vector2d.cross(v4_2.normalized, v4_1);
+    //
+    // setdpx(dpx);
   }, [coords]);
 
-  useEffect(() => {
-    handleAngleUpdate();
-  }, [coords, handleAngleUpdate]);
+  function collision(): boolean {
+    // /*
+    //  Check1
+    //  隣の頂点同士を結んだ線分を超えていないかチェック
+    // */
+    // const v1 = Vector2d.sub(coords[3], coords[0]); //線分の始点から円の中心
+    // const v2 = Vector2d.sub(coords[1], coords[0]); //線分の始点から終点
 
-  useEffect(() => {
-    setVap(Vector2d.sub(coords[1], coords[0]));
-    setVab(Vector2d.sub(coords[2], coords[0]));
-    setdpx(Vector2d.cross(vab, vap).magnitude);
-  }, coords);
+    // console.log(Math.abs(Math.floor(Vector2d.cross(v2.normalized, v1))));
+
+    return true;
+  }
 
   return (
     <React.Fragment>
@@ -95,6 +71,14 @@ export default function App() {
               closed
               stroke="red"
             />
+            <Line
+              points={[coords[1].x, coords[1].y, coords[3].x, coords[3].y]}
+              closed
+              dash={[6, 3]}
+              stroke="blue"
+              strokeWidth={1}
+            />
+
             {coords.map((point, i) => (
               <Circle
                 key={i}
@@ -106,12 +90,21 @@ export default function App() {
                 strokeWidth={2}
                 draggable
                 onDragMove={(e) => {
+                  const moveTo = new Vector2d(e.target.x(), e.target.y());
+
                   setCoords((coords) =>
-                    coords.map((value, idx) =>
-                      idx === i
-                        ? new Vector2d(e.target.x(), e.target.y())
-                        : value
-                    )
+                    coords.map((value, idx, coords) => {
+                      if (idx !== i) {
+                        return value;
+                      } else if (collision()) {
+                        e.target.stopDrag();
+                        e.target.x(value.x);
+                        e.target.y(value.y);
+                        return value;
+                      } else {
+                        return moveTo;
+                      }
+                    })
                   );
                 }}
               />
@@ -119,14 +112,11 @@ export default function App() {
           </Group>
         </Layer>
       </Stage>
-      <div>
-        vAP: [{vap.x}, {vap.y}]
-      </div>
-      <div>
-        vAB: [{vab.x}, {vab.y}]
-      </div>
-      <div>dX: {dpx}</div>
-      <div id="pAngle3">右下の角度：{Math.round(angle * 100) / 100}°</div>
+      {/* <div>dX1: {dpx[0]}</div>
+      <div>dX2: {dpx[1]}</div>
+      <div>dX3: {dpx[2]}</div>
+      <div>dX4: {dpx[3]}</div> */}
+      {/* <div id="pAngle3">右下の角度：{Math.round(angle * 100) / 100}°</div> */}
     </React.Fragment>
   );
 }

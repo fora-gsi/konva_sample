@@ -9,9 +9,9 @@ const rectWidth = 320;
 const rectHeight = 180;
 const initialPoints: Vector2d[] = [
   new Vector2d(startX, startY),
-  new Vector2d(startX + rectWidth, startY),
-  new Vector2d(startX + rectWidth, startY + rectHeight),
   new Vector2d(startX, startY + rectHeight),
+  new Vector2d(startX + rectWidth, startY + rectHeight),
+  new Vector2d(startX + rectWidth, startY),
 ];
 
 /**
@@ -40,11 +40,11 @@ const calcAngle = (a: Vector2d, b: Vector2d, c: Vector2d): number => {
   // ベクトルの外積をとる
   const cross = Vector2d.cross(va, vb);
 
-  // 外積のz成分が0未満なら角は入隅である
+  // 外積のz成分が0未満なら角は出隅である
   if (cross < 0) {
-    return 2 * Math.PI - theta;
-  } else {
     return theta;
+  } else {
+    return 2 * Math.PI - theta;
   }
 };
 
