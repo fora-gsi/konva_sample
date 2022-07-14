@@ -4,14 +4,15 @@ import { Circle, Group, Layer, Line, Stage } from "react-konva";
 import Vector2d from "./Vector2d";
 
 const pointerRad = 10;
-const startX = 10;
-const startY = 150;
+const startX = 50;
+const startY = 50;
 const rectWidth = 320;
 const rectHeight = 180;
 const initialPoints: Vector2d[] = [
   new Vector2d(startX, startY),
+  new Vector2d(startX, startY + rectHeight),
+  new Vector2d(startX + rectWidth, startY + rectHeight),
   new Vector2d(startX + rectWidth, startY),
-  new Vector2d(startX + rectWidth, startY + 100),
 ];
 
 /**
@@ -35,51 +36,34 @@ const distance = (
   return d;
 };
 
-// function collision_l2c(
-//   circlePos: Vector2d,
-//   circleR: number,
-//   startCoord: Vector2d,
-//   endCoord: Vector2d
-// ): boolean {
-//   const v = new Vector2d(endCoord.x - startCoord.x, endCoord.y - startCoord.y); // 線分
-//   const v1 = new Vector2d(
-//     circlePos.x - startCoord.x,
-//     circlePos.y - startCoord.y
-//   ); // 線分の始点からマウスポジションを向くベクトル
+const pushBack = (pa: Vector2d, pb: Vector2d, distance: number) => {
+  const va = new Vector2d(pb.x - pa.x, pb.y - pa.y); // 点AからBを指すベクトル
+  const vu = new Vector2d(-va.y, va.x).normalized.times(distance);
 
-//   const d = Vector2d.cross(v.normalized, v1); // 線分と円の中心の最短距離
-
-//   return Math.abs(d) < circleR;
-// }
+  return vu;
+};
 
 export default function App() {
   const lineRef = React.useRef<Konva.Line>(null);
   const circleRef = React.useRef<Konva.Circle>(null);
-
-  const [shapePos, setShapePos] = useState<Vector2d>(new Vector2d(0, 0));
 
   const [coords, setCoords] = useState<Vector2d[]>(initialPoints);
 
   function onDragMove(e: Konva.KonvaEventObject<MouseEvent>) {
     const line = lineRef.current;
     const circle = circleRef.current;
-
     if (!line || !circle) {
       return;
     }
-
     let circlePos = new Vector2d(
       circle.absolutePosition().x,
       circle.absolutePosition().y
     );
-    const d = distance(circlePos, coords[1], coords[0]);
+    const d = distance(circlePos, coords[0], coords[1]);
     if (d < pointerRad) {
-      const xV = //線分に直交するベクトル
-        (circlePos = new Vector2d(circlePos.x, circlePos.y - (pointerRad - d)));
-
-      circle.setPosition(circlePos);
+      circlePos.add(pushBack(coords[0], coords[1], pointerRad - d));
     }
-    setShapePos(circlePos);
+    circleRef.current.absolutePosition(circlePos);
   }
 
   return (
@@ -88,8 +72,8 @@ export default function App() {
         <Layer>
           <Group>
             <Circle
-              x={100}
-              y={50}
+              x={150}
+              y={230}
               radius={pointerRad}
               fill="red"
               draggable
@@ -98,20 +82,34 @@ export default function App() {
             />
 
             <Line
-              points={[coords[0].x, coords[0].y, coords[1].x, coords[1].y]}
+              points={[
+                coords[0].x,
+                coords[0].y,
+                coords[1].x,
+                coords[1].y,
+                coords[2].x,
+                coords[2].y,
+                coords[3].x,
+                coords[3].y,
+              ]}
+              closed
               stroke="red"
               ref={lineRef}
             />
-            <Line
+            {/* <Line
               id="vec"
               points={[
-                0 + coords[0].x,
-                0 + coords[0].y,
-                coords[1].y - coords[0].y + coords[0].x,
-                -(coords[1].x - coords[0].x) + coords[0].y,
+                coords[1].x,
+                coords[1].y,
+                vu.x,
+                vu.y,
+                // 0 + coords[0].x,
+                // 0 + coords[0].y,
+                // coords[1].y - coords[0].y + coords[0].x,
+                // -(coords[1].x - coords[0].x) + coords[0].y,
               ]}
               stroke="blue"
-            />
+            /> */}
           </Group>
         </Layer>
       </Stage>
