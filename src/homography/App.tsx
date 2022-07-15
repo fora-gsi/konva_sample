@@ -5,8 +5,8 @@ import Vector2d from "./Vector2d";
 
 const pointerRad = 10; // 画面上に登場する変形用のハンドル
 const hitArea = 0.5; // 線分と当たり判定を行う円の半径
-const startX = 10;
-const startY = 10;
+const startX = 200;
+const startY = 150;
 const rectWidth = (window.innerWidth / 2) * 0.8;
 const rectHeight = (window.innerHeight / 2) * 0.8;
 const initialPoints: Vector2d[] = [
