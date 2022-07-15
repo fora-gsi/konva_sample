@@ -1,5 +1,5 @@
 import Konva from "konva";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Circle, Group, Layer, Line, Stage } from "react-konva";
 import Vector2d from "./Vector2d";
 
@@ -10,9 +10,7 @@ const rectWidth = 320;
 const rectHeight = 180;
 const initialPoints: Vector2d[] = [
   new Vector2d(startX, startY),
-  new Vector2d(startX, startY + rectHeight),
   new Vector2d(startX + rectWidth, startY + rectHeight),
-  new Vector2d(startX + rectWidth, startY),
 ];
 
 /**
@@ -47,7 +45,7 @@ export default function App() {
   const lineRef = React.useRef<Konva.Line>(null);
   const circleRef = React.useRef<Konva.Circle>(null);
 
-  const [coords, setCoords] = useState<Vector2d[]>(initialPoints);
+  const [coords] = useState<Vector2d[]>(initialPoints);
 
   function onDragMove(e: Konva.KonvaEventObject<MouseEvent>) {
     const line = lineRef.current;
@@ -82,34 +80,11 @@ export default function App() {
             />
 
             <Line
-              points={[
-                coords[0].x,
-                coords[0].y,
-                coords[1].x,
-                coords[1].y,
-                coords[2].x,
-                coords[2].y,
-                coords[3].x,
-                coords[3].y,
-              ]}
+              points={[coords[0].x, coords[0].y, coords[1].x, coords[1].y]}
               closed
               stroke="red"
               ref={lineRef}
             />
-            {/* <Line
-              id="vec"
-              points={[
-                coords[1].x,
-                coords[1].y,
-                vu.x,
-                vu.y,
-                // 0 + coords[0].x,
-                // 0 + coords[0].y,
-                // coords[1].y - coords[0].y + coords[0].x,
-                // -(coords[1].x - coords[0].x) + coords[0].y,
-              ]}
-              stroke="blue"
-            /> */}
           </Group>
         </Layer>
       </Stage>
